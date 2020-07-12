@@ -1,9 +1,12 @@
 ﻿using Autofac;
 using Autofac.Configuration;
+
 using AutoMapper;
+
+using dnd.inventory.api.Filters;
+using dnd.inventory.api.Modules;
+
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -12,10 +15,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using dnd.inventory.api.Filters;
-using dnd.inventory.api.Modules;
+
 using System.IO;
 
 /*
@@ -55,7 +58,7 @@ namespace dnd.inventory.api
                 };
         }
 
-        public static IConfiguration Configuration { get; private set; }
+        public static IConfiguration? Configuration { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -95,7 +98,7 @@ namespace dnd.inventory.api
         /// with Autofac. This runs after ConfigureServices so the things
         /// here will override registrations made in ConfigureServices.
         /// Don't build the container; that gets done for you.
-        /// 
+        ///
         /// See: https://github.com/drwatson1/AspNet-Core-REST-Service/wiki#dependency-injection
         /// </remarks>
         public void ConfigureContainer(ContainerBuilder builder)
@@ -113,7 +116,7 @@ namespace dnd.inventory.api
         /// This only gets called if your environment is Production. The
         /// default ConfigureContainer won't be automatically called if this
         /// one is called.
-        /// 
+        ///
         /// See: https://github.com/drwatson1/AspNet-Core-REST-Service/wiki#dependency-injection
         /// </remarks>
         public void ConfigureProductionContainer(ContainerBuilder builder)

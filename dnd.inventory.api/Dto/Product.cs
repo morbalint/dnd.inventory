@@ -15,6 +15,6 @@
         /// Product name
         /// </summary>
         /// <example>lime</example>
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 }
