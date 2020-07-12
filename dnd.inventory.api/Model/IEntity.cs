@@ -1,7 +1,14 @@
-﻿namespace dnd.inventory.api.Model
+﻿using System;
+
+namespace dnd.inventory.api.Model
 {
-    public interface IEntity
+    public interface IEntity<TKey>
+        where TKey : struct, IComparable<TKey>
     {
-        int Id { get; }
+        TKey Id { get; }
+    }
+
+    public interface IEntity : IEntity<int>
+    {
     }
 }

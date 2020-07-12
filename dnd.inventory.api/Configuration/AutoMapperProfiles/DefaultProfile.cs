@@ -10,10 +10,10 @@ namespace dnd.inventory.api.Profiles
     {
         public DefaultProfile()
         {
-            CreateMap<Model.Product, Dto.Product>();
-            CreateMap<Dto.UpdateProduct, Model.Product>();
+            CreateMap<Model.Item, Dto.Product>();
+            CreateMap<Dto.UpdateProduct, Model.Item>();
             // For copy creation
-            CreateMap<Model.Product, Model.Product>();
+            CreateMap<Model.Item, Model.Item>();
         }
     }
 }

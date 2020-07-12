@@ -1,6 +1,6 @@
 ﻿namespace dnd.inventory.api.Repo
 {
-    public interface IProductsRepo : IRepository<Model.Product>
+    public interface IProductsRepo : IRepository<Model.Item>
     {
     }
 }

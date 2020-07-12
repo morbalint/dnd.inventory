@@ -11,35 +11,33 @@ namespace dnd.inventory.api.Repo
 {
     public class ProductsRepo : IProductsRepo
     {
-        readonly List<Product> products = new List<Product>()
+        private readonly List<Item> products = new List<Item>()
         {
-            new Product(1, "lime"),
-            new Product(2, "carrot")
         };
 
-        IMapper Mapper { get; }
+        private IMapper Mapper { get; }
 
         public ProductsRepo(IMapper mapper)
         {
             Mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public IQueryable<Product> Get()
+        public IQueryable<Item> Get()
         {
-            return products.Select(Mapper.Map<Product>).AsQueryable();
+            return products.Select(Mapper.Map<Item>).AsQueryable();
         }
 
-        public void Create(Product p)
+        public void Create(Item p)
         {
             if (p == null)
                 throw new ArgumentNullException(nameof(p));
 
             if (products.Any(x => x.Id == p.Id))
             {
-                throw new DuplicateKeyException($"Can't create an object of a type {nameof(Product)} with the key '{p.Id}'. The object with the same key is already exists");
+                throw new DuplicateKeyException($"Can't create an object of a type {nameof(Item)} with the key '{p.Id}'. The object with the same key is already exists");
             }
 
-            products.Add(Mapper.Map<Product>(p));
+            products.Add(Mapper.Map<Item>(p));
         }
 
         public void Delete(int id)
@@ -47,13 +45,13 @@ namespace dnd.inventory.api.Repo
             var p = products.FirstOrDefault(x => x.Id == id);
             if (p == null)
             {
-                throw new KeyNotFoundException($"An object of a type '{nameof(Product)}' with the key '{id}' not found");
+                throw new KeyNotFoundException($"An object of a type '{nameof(Item)}' with the key '{id}' not found");
             }
 
             products.RemoveAll(x => x.Id == p.Id);
         }
 
-        public void Update(Product p)
+        public void Update(Item p)
         {
             if (p == null)
                 throw new ArgumentNullException(nameof(p));
@@ -61,11 +59,11 @@ namespace dnd.inventory.api.Repo
             var stored = products.FirstOrDefault(x => x.Id == p.Id);
             if (stored == null)
             {
-                throw new KeyNotFoundException($"An object of a type '{nameof(Product)}' with the key '{p.Id}' not found");
+                throw new KeyNotFoundException($"An object of a type '{nameof(Item)}' with the key '{p.Id}' not found");
             }
 
             products.RemoveAll(x => x.Id == stored.Id);
-            products.Add(Mapper.Map<Product>(p));
+            products.Add(Mapper.Map<Item>(p));
         }
     }
 }

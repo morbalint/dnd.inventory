@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+
+using dnd.inventory.api.Repo;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using dnd.inventory.api.Repo;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +17,9 @@ namespace dnd.inventory.api.Controllers
     [Produces("application/json")]
     public class ProductsController : ControllerBase
     {
-        Repo.IProductsRepo ProductsRepo { get; }
-        IMapper Mapper { get; }
-        ILogger Logger { get; }
+        private Repo.IProductsRepo ProductsRepo { get; }
+        private IMapper Mapper { get; }
+        private ILogger Logger { get; }
 
         public ProductsController(IProductsRepo productsRepo, IMapper mapper, ILogger<ProductsController> logger)
         {
@@ -60,7 +63,7 @@ namespace dnd.inventory.api.Controllers
         [Route("{id}")]
         public IActionResult Create(int id, [FromBody] Dto.UpdateProduct newProductDto)
         {
-            var newProduct = new Model.Product(id);
+            var newProduct = new Model.Item { Id = id };
             Mapper.Map(newProductDto, newProduct);
             ProductsRepo.Create(newProduct);
 
