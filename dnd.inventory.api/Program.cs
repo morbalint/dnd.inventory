@@ -1,19 +1,17 @@
 ﻿using Autofac.Extensions.DependencyInjection;
-using Microsoft.AspNetCore;
+
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
-using Serilog;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+using Serilog;
 
 namespace dnd.inventory.api
 {
-    public class Program
+    public sealed class Program
     {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+        public static void Main(string[] args) => CreateHostBuilder(args).Build().Run();
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
@@ -34,13 +32,7 @@ namespace dnd.inventory.api
                         .ReadFrom.Configuration(context.Configuration)
                         .CreateLogger());
                 })
-                .ConfigureAppConfiguration(x =>
-                {
-                    x.AddEnvironmentVariables();
-                })
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+                .ConfigureAppConfiguration(x => x.AddEnvironmentVariables())
+                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
     }
 }

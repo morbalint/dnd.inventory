@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using dnd.inventory.api.Exceptions;
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Hosting;
-using dnd.inventory.api.Exceptions;
-using Microsoft.Extensions.Hosting;
 
 namespace dnd.inventory.api.Middleware
 {
@@ -19,14 +22,14 @@ namespace dnd.inventory.api.Middleware
     /// There is another way to do this - an exception filter.
     /// However, a middleware is a preferred way to achieve this according to the official documentation.
     /// To learn more see https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/filters?view=aspnetcore-2.1#exception-filters
-    /// 
+    ///
     /// See also: https://github.com/drwatson1/AspNet-Core-REST-Service/wiki#unhandled-exceptions-handling
     /// </remarks>
     public class ExceptionMiddleware
     {
-        RequestDelegate Next { get; }
-        ILogger Logger { get; }
-        IHostEnvironment Environment { get; }
+        private RequestDelegate Next { get; }
+        private ILogger Logger { get; }
+        private IHostEnvironment Environment { get; }
 
         public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment environment)
         {
@@ -47,13 +50,13 @@ namespace dnd.inventory.api.Middleware
                 // If context.Response.HasStarted == true, then we can't write to the response stream anymore. So we have to restore the body.
                 // If we don't do that we get an exception.
                 context.Response.Body = body;
-                await HandleExceptionAsync(context, ex);
+                await handleExceptionAsync(context, ex);
             }
         }
 
-        async Task HandleExceptionAsync(HttpContext context, Exception ex)
+        private async Task handleExceptionAsync(HttpContext context, Exception ex)
         {
-            int statusCode = 500;
+            var statusCode = 500;
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
@@ -82,29 +85,30 @@ namespace dnd.inventory.api.Middleware
             }
         }
 
-        class ErrorResponse
+        private class ErrorResponse
         {
             public ErrorResponse(Exception ex, bool includeFullExceptionInfo)
-            {
-                Error = new ExceptionDescription(ex);
-                if (includeFullExceptionInfo)
-                {
-                    Error.Exception = ex;
-                }
-            }
+                => Error = includeFullExceptionInfo
+                    ? new ExceptionDetailedDesction(ex)
+                    : new ExceptionDescription(ex);
 
             public ExceptionDescription Error { get; set; }
         }
 
-        class ExceptionDescription
+        private class ExceptionDescription
         {
-            public ExceptionDescription(Exception ex)
-            {
-                Message = ex.Message;
-            }
+            public ExceptionDescription(Exception ex) => this.Message = ex.Message;
 
-            public string Message { get; set; }
-            public Exception Exception { get; set; }
+            public string Message { get; }
+        }
+
+        private class ExceptionDetailedDesction : ExceptionDescription
+        {
+            public ExceptionDetailedDesction(Exception ex)
+                : base(ex)
+                => this.Exception = ex;
+
+            public Exception Exception { get; }
         }
     }
 }
